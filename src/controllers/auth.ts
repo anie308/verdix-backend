@@ -19,7 +19,7 @@ export const register = async (req: Request, res: Response) => {
     const profile = await ProfileModel.create({ username, full_name, role: role || "farmer" })
     await UserModel.create({ email, password_hash: passwordHash, profile_id: profile._id })
 
-    const token = jwt.sign({ sub: profile._id.toString(), role: profile.role }, env.jwtSecret, { expiresIn: "7d" })
+    const token = jwt.sign({ sub: profile._id.toString(), role: profile.role }, env.jwtSecret as string, { expiresIn: "7d" })
     return res.status(201).json({ access_token: token, user: { id: profile._id, username: profile.username, full_name: profile.full_name, role: profile.role } })
   } catch (err: any) {
     return res.status(500).json({ message: err.message || "Registration failed" })
@@ -39,7 +39,7 @@ export const login = async (req: Request, res: Response) => {
     const profile = await ProfileModel.findById(user.profile_id)
     if (!profile) return res.status(401).json({ message: "Invalid profile" })
 
-    const token = jwt.sign({ sub: profile._id.toString(), role: profile.role }, env.jwtSecret, { expiresIn: "7d" })
+    const token = jwt.sign({ sub: profile._id.toString(), role: profile.role }, env.jwtSecret as string, { expiresIn: "7d" })
     return res.json({ access_token: token, user: { id: profile._id, username: profile.username, full_name: profile.full_name, role: profile.role } })
   } catch (err: any) {
     return res.status(500).json({ message: err.message || "Login failed" })
