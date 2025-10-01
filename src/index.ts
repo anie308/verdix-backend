@@ -25,11 +25,25 @@ async function bootstrap() {
   app.use(cookieParser())
   app.use(
     cors({
-      origin: env.clientOrigin,
-      credentials: true,
+      origin: [
+        "http://localhost:3000",   // local dev
+        "https://verdix.vercel.app" // production
+      ],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "Accept",
+      ],
       exposedHeaders: ["Authorization"],
-    }),
-  )
+      credentials: true,
+    })
+  );
+  
+  // Handle preflight (OPTIONS) explicitly
+  app.options("*", cors());
+  
 
   // Static uploads serving
   const uploadsPath = path.resolve(env.uploadsDir)
