@@ -17,7 +17,7 @@ async function bootstrap() {
   await connectToDatabase()
 
   const app = express()
-  
+
   app.use(helmet())
   app.use(morgan("dev"))
   app.use(express.json({ limit: "5mb" }))
